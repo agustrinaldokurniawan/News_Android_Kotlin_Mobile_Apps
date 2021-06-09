@@ -17,6 +17,7 @@ import com.tsuga.news.core.ui.NewsAdapter
 import com.tsuga.news.core.ui.ViewModelFactory
 import com.tsuga.news.databinding.HomeFragmentBinding
 import com.tsuga.news.readnews.ReadNews
+import com.tsuga.news.readnews.WebView
 
 class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
@@ -81,6 +82,10 @@ class HomeFragment : Fragment() {
                 binding.tvTitle.text = it.data?.get(randomNumber)?.title
                 binding.tvSource.text = it.data?.get(randomNumber)?.source
 
+                binding.btnReadMore.setOnClickListener { _ ->
+                    openUrl(it.data?.get(randomNumber)?.title, it.data?.get(randomNumber)?.url)
+                }
+
             })
             with(binding.rvNews) {
                 layoutManager = LinearLayoutManager(context)
@@ -88,6 +93,19 @@ class HomeFragment : Fragment() {
                 adapter = newsAdapter
             }
         }
+    }
+
+    private fun openUrl(title: String?, url: String?) {
+        val bundle = Bundle()
+        bundle.putString("url", url)
+        bundle.putString("title", title)
+        val fragment = WebView()
+        fragment.arguments = bundle
+
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.home_fragment_container, fragment)
+            ?.addToBackStack(null)
+            ?.commit()
     }
 
     override fun onDestroy() {

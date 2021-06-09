@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -28,6 +29,7 @@ class WebView : Fragment() {
         val title = arguments?.getString("title")
 
         if (url != null) {
+            binding.webview.webViewClient = WebViewClient()
             binding.webview.loadUrl(url)
             binding.tvTitle.text = title
             binding.btnClose.setOnClickListener {
