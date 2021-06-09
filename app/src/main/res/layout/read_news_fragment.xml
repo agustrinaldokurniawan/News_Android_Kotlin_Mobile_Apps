@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".home.HomeFragment">
-
+    tools:context=".readnews.ReadNews">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +25,7 @@
         <View
             android:id="@+id/container_top"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:background="@drawable/background_title"
             app:layout_constraintBottom_toBottomOf="@id/iv_image"
             app:layout_constraintStart_toStartOf="parent" />
@@ -53,28 +52,67 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/lorem_1"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/iv_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_source" />
 
-        <Button
-            android:id="@+id/btn_read_more"
-            android:layout_width="wrap_content"
+        <View
+            android:id="@+id/container_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/background_content"
+            app:layout_constraintBottom_toBottomOf="@id/bottom_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_image" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:background="@android:color/transparent"
-            android:drawableEnd="@drawable/ic_baseline_arrow_right_alt_24_white"
+            android:layout_marginTop="16dp"
+            android:text="@string/sample_date"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@id/container_content"
+            app:layout_constraintTop_toTopOf="@id/container_content" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/lorem_2"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@id/container_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_date" />
+
+        <Button
+            android:id="@+id/btn_read_more"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
             android:text="@string/read_more"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_content" />
 
+        <View
+            android:id="@+id/bottom_content"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_read_more" />
 
         <TextView
             android:id="@+id/tv_headline"
@@ -84,12 +122,12 @@
             android:layout_marginTop="16dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/headlines"
+            android:text="@string/recommendation"
             android:textColor="@color/black"
             android:textSize="36sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_read_more" />
+            app:layout_constraintTop_toBottomOf="@id/container_content" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_news"

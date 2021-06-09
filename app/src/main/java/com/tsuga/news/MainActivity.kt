@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.fragment.app.Fragment
+import com.tsuga.news.bookmark.BookmarkFragment
 import com.tsuga.news.databinding.ActivityMainBinding
 import com.tsuga.news.home.HomeFragment
+import com.tsuga.news.search.SearchFragment
 
 @Suppress("Deprecation")
 class MainActivity : AppCompatActivity() {
@@ -23,9 +26,36 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
+        binding.cnb.setItemSelected(R.id.home_menu)
+        binding.cnb.setOnItemSelectedListener {
+            changeFragment(it)
+        }
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.home_fragment_container, HomeFragment())
             .commit()
+
+    }
+
+    private fun changeFragment(it: Int) {
+        var fragment: Fragment? = null
+        when (it) {
+            R.id.home_menu -> {
+                fragment = HomeFragment()
+            }
+            R.id.search_menu -> {
+                fragment = SearchFragment()
+            }
+            R.id.bookmark_menu -> {
+                fragment = BookmarkFragment()
+            }
+        }
+
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.home_fragment_container, fragment)
+                .commit()
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
