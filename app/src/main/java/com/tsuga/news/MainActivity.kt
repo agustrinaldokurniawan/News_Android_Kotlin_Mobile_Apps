@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.tsuga.news.bookmark.BookmarkFragment
 import com.tsuga.news.databinding.ActivityMainBinding
 import com.tsuga.news.home.HomeFragment
@@ -31,12 +34,13 @@ class MainActivity : AppCompatActivity() {
             changeFragment(it)
         }
 
+        supportActionBar?.hide()
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.home_fragment_container, HomeFragment())
             .commit()
 
     }
-
     private fun changeFragment(it: Int) {
         var fragment: Fragment? = null
         when (it) {
@@ -64,5 +68,10 @@ class MainActivity : AppCompatActivity() {
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        supportActionBar?.hide()
     }
 }
