@@ -12,8 +12,11 @@ interface NewsDao {
     @Query("select * from news where isBookmark = 1")
     fun getBookmark(): LiveData<List<NewsEntity>>
 
-    @Query("select * from news where title like :keyword")
+    @Query("select * from news where title like :keyword or content like :keyword or description like :keyword or author like :keyword or source like :keyword")
     fun getNewsByKeyword(keyword: String?): LiveData<List<NewsEntity>>
+
+    @Query("select * from news where isBookmark=1 and (title like :keyword or content like :keyword or description like :keyword or author like :keyword or source like :keyword)")
+    fun getBookmarkByKeyword(keyword: String?): LiveData<List<NewsEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNews(news: List<NewsEntity>)

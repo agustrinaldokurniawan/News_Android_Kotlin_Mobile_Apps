@@ -1,5 +1,6 @@
 package com.tsuga.news.core.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tsuga.news.core.data.source.local.LocalDataSource
 import com.tsuga.news.core.data.source.local.entity.NewsEntity
@@ -56,23 +57,11 @@ class NewsRepository private constructor(
         executors.diskIO().execute { localDataSource.setBookmarkNews(news, state) }
     }
 
-    fun getNewsByKeyword(keyword: String): LiveData<Resource<List<NewsEntity>>> =
-        object : NetworkBoundResource<List<NewsEntity>, List<NewsResponse>>(executors) {
-            override fun shouldFetch(data: List<NewsEntity>?): Boolean {
-                return data == null || data.isEmpty()
-            }
+    fun getNewsByKeyword(keyword: String): LiveData<List<NewsEntity>> {
+        return localDataSource.getNewsByKeyword(keyword)
+    }
 
-            override fun loadFromDB(): LiveData<List<NewsEntity>> {
-                return localDataSource.getNewsByKeyword(keyword)
-            }
-
-            override fun createCall(): LiveData<ApiResponse<List<NewsResponse>>> {
-                return remoteDataSource.getAllNews()
-            }
-
-            override fun saveCallResult(data: List<NewsResponse>) {
-                val newsList = DataMapper.mapResponsesToEntities(data)
-                localDataSource.insertNews(newsList)
-            }
-        }.asLiveData()
+    fun getBookmarkByKeyword(keyword: String): LiveData<List<NewsEntity>> {
+        return localDataSource.getBookmarkByKeyword(keyword)
+    }
 }

@@ -2,10 +2,12 @@ package com.tsuga.news
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.tsuga.news.bookmark.BookmarkFragment
@@ -18,6 +20,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var decorView: View
 
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -40,6 +45,10 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.home_fragment_container, HomeFragment())
             .commit()
 
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
     private fun changeFragment(it: Int) {
         var fragment: Fragment? = null
@@ -68,10 +77,5 @@ class MainActivity : AppCompatActivity() {
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        supportActionBar?.hide()
     }
 }

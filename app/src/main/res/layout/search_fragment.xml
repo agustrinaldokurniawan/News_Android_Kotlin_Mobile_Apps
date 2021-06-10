@@ -16,7 +16,7 @@
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/headlines"
+        android:text="@string/search"
         android:textColor="@color/black"
         android:textSize="36sp"
         android:textStyle="bold"
@@ -87,6 +87,8 @@
         android:layout_marginEnd="8dp"
         android:background="#f3f3f3"
         android:scrollbars="none"
+        android:paddingBottom="75dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_news"
         tools:listitem="@layout/news_item" />
 

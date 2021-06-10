@@ -1,14 +1,16 @@
 package com.tsuga.news.readnews
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.tsuga.news.core.data.source.local.entity.NewsEntity
 import com.tsuga.news.databinding.WebviewBinding
 
 class WebView : Fragment() {
@@ -29,7 +31,36 @@ class WebView : Fragment() {
         val title = arguments?.getString("title")
 
         if (url != null) {
-            binding.webview.webViewClient = WebViewClient()
+            val webSettings = binding.webview.settings
+            webSettings.javaScriptEnabled = true
+            webSettings.domStorageEnabled = true
+
+            binding.webview.setWebViewClient(object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    return super.shouldOverrideUrlLoading(view, request)
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    if (binding.pg.visibility == View.VISIBLE) {
+                        binding.pg.visibility = View.GONE
+                        Log.d("webview", "finish")
+                    }
+                }
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    super.onReceivedError(view, request, error)
+                    binding.tvError.visibility = View.VISIBLE
+                    Log.d("webview", "error")
+                }
+            })
             binding.webview.loadUrl(url)
             binding.tvTitle.text = title
             binding.btnClose.setOnClickListener {
@@ -41,6 +72,6 @@ class WebView : Fragment() {
     }
 
     private fun detachFragment() {
-        requireActivity().supportFragmentManager.popBackStack()
+        activity?.onBackPressed()
     }
 }

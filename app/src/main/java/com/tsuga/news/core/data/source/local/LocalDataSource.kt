@@ -17,11 +17,13 @@ class LocalDataSource private constructor(private val newsDao: NewsDao) {
     fun getAllNews(): LiveData<List<NewsEntity>> = newsDao.getAllNews()
     fun getBookmarkNews(): LiveData<List<NewsEntity>> = newsDao.getBookmark()
     fun getNewsByKeyword(keyword: String): LiveData<List<NewsEntity>> =
-        newsDao.getNewsByKeyword(keyword)
+        newsDao.getNewsByKeyword("%$keyword%")
 
     fun insertNews(newsList: List<NewsEntity>) = newsDao.insertNews(newsList)
     fun setBookmarkNews(newsEntity: NewsEntity, newState: Boolean) {
         newsEntity.isBookmark = newState
         newsDao.updateBookmarkNews(newsEntity)
     }
+    fun getBookmarkByKeyword(keyword: String): LiveData<List<NewsEntity>> =
+        newsDao.getBookmarkByKeyword("%$keyword%")
 }

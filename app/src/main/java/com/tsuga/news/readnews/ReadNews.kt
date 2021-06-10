@@ -1,7 +1,6 @@
 package com.tsuga.news.readnews
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,11 +13,14 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.tsuga.news.R
+import com.tsuga.news.ReadNewsActivity
+import com.tsuga.news.WebViewActivity
 import com.tsuga.news.core.data.Resource
 import com.tsuga.news.core.data.source.local.entity.NewsEntity
 import com.tsuga.news.core.ui.NewsAdapter
 import com.tsuga.news.core.ui.ViewModelFactory
 import com.tsuga.news.databinding.ReadNewsFragmentBinding
+import java.text.SimpleDateFormat
 
 class ReadNews : Fragment() {
     private lateinit var binding: ReadNewsFragmentBinding
@@ -43,11 +45,9 @@ class ReadNews : Fragment() {
             val fragment = ReadNews()
             fragment.arguments = bundle
 
-            requireActivity().supportFragmentManager.beginTransaction()
-                .detach(this)
-                .replace(R.id.home_fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            val intent = Intent(activity, ReadNewsActivity::class.java)
+            intent.putExtra(ReadNewsActivity.DATA, it)
+            startActivity(intent)
         }
 
         val factory = ViewModelFactory.getInstance(requireActivity())
@@ -68,7 +68,13 @@ class ReadNews : Fragment() {
             tvTitle.text = data?.title
             tvSource.text = data?.source
             tvContent.text = data?.content
-            tvDate.text = data?.publishedAt
+
+            val formatter1 = SimpleDateFormat("yyyy-MM-dd")
+            val formatter2 = SimpleDateFormat("dd MMMM yyyy")
+            val date1 = formatter1.parse(data?.publishedAt)
+            val date = formatter2.format(date1)
+
+            tvDate.text = date.toString()
             btnBookmark.setOnClickListener {
                 val statusBookmark = !data?.isBookmark!!
                 viewModel.setBookmarkNews(data, statusBookmark)
@@ -116,16 +122,11 @@ class ReadNews : Fragment() {
     }
 
     private fun openUrl(url: String?, title: String?) {
-        val bundle = Bundle()
-        bundle.putString("url", url)
-        bundle.putString("title", title)
-        val fragment = WebView()
-        fragment.arguments = bundle
 
-        activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.home_fragment_container, fragment)
-            ?.addToBackStack(null)
-            ?.commit()
+        val intent = Intent(activity, WebViewActivity::class.java)
+        intent.putExtra(WebViewActivity.URL, url)
+        intent.putExtra(WebViewActivity.TITLE, title)
+        startActivity(intent)
     }
 
     private fun setBookmark(statusBookmark: Boolean) {

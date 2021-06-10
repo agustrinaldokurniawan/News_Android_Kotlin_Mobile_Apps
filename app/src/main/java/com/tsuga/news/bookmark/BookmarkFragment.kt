@@ -1,13 +1,17 @@
 package com.tsuga.news.bookmark
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tsuga.news.R
+import com.tsuga.news.ReadNewsActivity
 import com.tsuga.news.core.ui.NewsAdapter
 import com.tsuga.news.core.ui.ViewModelFactory
 import com.tsuga.news.databinding.BookmarkFragmentBinding
@@ -34,15 +38,10 @@ class BookmarkFragment : Fragment() {
             val newsAdapter = NewsAdapter()
 
             newsAdapter.onItemClick = {
-                val bundle = Bundle()
-                bundle.putParcelable("data", it)
-                val fragment = ReadNews()
-                fragment.arguments = bundle
 
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.home_fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                val intent = Intent(activity, ReadNewsActivity::class.java)
+                intent.putExtra(ReadNewsActivity.DATA, it)
+                startActivity(intent)
             }
 
             val factory = ViewModelFactory.getInstance(requireActivity())
@@ -51,6 +50,36 @@ class BookmarkFragment : Fragment() {
             viewModel.news.observe(viewLifecycleOwner, {
                 newsAdapter.setData(it)
             })
+
+            binding.etNews.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    viewModel.searchQueryBookmark(s.toString())
+                        .observe(viewLifecycleOwner, { query_data ->
+                            query_data.let {
+                                newsAdapter.setData(it)
+                            }
+                        })
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
+            })
+
             with(binding.rvNews) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)

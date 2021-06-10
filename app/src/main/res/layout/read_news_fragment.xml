@@ -150,6 +150,7 @@
             android:layout_marginEnd="8dp"
             android:background="#f3f3f3"
             android:scrollbars="none"
+            android:paddingBottom="75dp"
             app:layout_constraintTop_toBottomOf="@id/tv_headline"
             tools:listitem="@layout/news_item" />
 
