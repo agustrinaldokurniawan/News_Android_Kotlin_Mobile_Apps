@@ -4,25 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tsuga.news.ReadNewsActivity
-import com.tsuga.news.core.data.Resource
 import com.tsuga.news.core.ui.NewsAdapter
-import com.tsuga.news.core.ui.ViewModelFactory
 import com.tsuga.news.databinding.SearchFragmentBinding
-import com.tsuga.news.readnews.ReadNews
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,11 +38,6 @@ class SearchFragment : Fragment() {
                 intent.putExtra(ReadNewsActivity.DATA, it)
                 startActivity(intent)
             }
-
-            val factory = ViewModelFactory.getInstance(requireActivity())
-
-
-            viewModel = ViewModelProvider(this, factory)[SearchViewModel::class.java]
 
             viewModel.searchNews("").observe(viewLifecycleOwner, {
                 if (it != null) {

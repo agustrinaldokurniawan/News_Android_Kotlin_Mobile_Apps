@@ -2,12 +2,10 @@ package com.tsuga.news.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -15,20 +13,16 @@ import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.tsuga.news.R
 import com.tsuga.news.ReadNewsActivity
-import com.tsuga.news.WebViewActivity
-import com.tsuga.news.core.data.Resource
-import com.tsuga.news.core.data.source.local.entity.NewsEntity
+import com.tsuga.news.core.domain.model.News
 import com.tsuga.news.core.ui.NewsAdapter
-import com.tsuga.news.core.ui.ViewModelFactory
 import com.tsuga.news.databinding.HomeFragmentBinding
-import com.tsuga.news.readnews.ReadNews
-import com.tsuga.news.readnews.WebView
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,26 +39,24 @@ class HomeFragment : Fragment() {
             val newsAdapter = NewsAdapter()
 
             newsAdapter.onItemClick = {
-                val intent = Intent(activity, ReadNewsActivity::class.java)
-                intent.putExtra(ReadNewsActivity.DATA, it)
-                startActivity(intent)
+                startRead(it)
             }
 
-            val factory = ViewModelFactory.getInstance(requireActivity())
-            viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
-
-            viewModel.news.observe(viewLifecycleOwner, {
+            homeViewModel.news.observe(viewLifecycleOwner, {
                 if (it != null) {
                     when (it) {
-                        is Resource.Loading -> binding.pg.visibility = View.VISIBLE
-                        is Resource.Success -> {
+                        is com.tsuga.news.core.data.Resource.Loading -> binding.pg.visibility =
+                            View.VISIBLE
+                        is com.tsuga.news.core.data.Resource.Success -> {
                             binding.pg.visibility = View.GONE
                             newsAdapter.setData(it.data)
                             if (it.data != null) {
 
-                                val randomNumber = (0..(it.data.size.minus(1) ?: 10)).random()
+                                val randomNumber = (0..(it.data!!.size.minus(1))).random()
                                 Glide.with(view)
-                                    .load(it.data[randomNumber].urlToImage)
+                                    .load(
+                                        it.data!![randomNumber].urlToImage.orEmpty()
+                                            .ifEmpty { R.drawable.empty_news })
                                     .apply(
                                         RequestOptions().transform(
                                             CenterCrop(),
@@ -72,18 +64,15 @@ class HomeFragment : Fragment() {
                                         )
                                     )
                                     .into(binding.ivImage)
-                                binding.tvTitle.text = it.data[randomNumber].title
-                                binding.tvSource.text = it.data[randomNumber].source
+                                binding.tvTitle.text = it.data!![randomNumber].title
+                                binding.tvSource.text = it.data!![randomNumber].source
 
                                 binding.btnReadMore.setOnClickListener { _ ->
-                                    openUrl(
-                                        it.data[randomNumber].title,
-                                        it.data[randomNumber].url
-                                    )
+                                    startRead(it.data!![randomNumber])
                                 }
                             }
                         }
-                        is Resource.Error -> {
+                        is com.tsuga.news.core.data.Resource.Error -> {
                             binding.pg.visibility = View.GONE
                             binding.tvError.visibility = View.VISIBLE
                         }
@@ -98,10 +87,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun openUrl(title: String?, url: String?) {
-        val intent = Intent(activity, WebViewActivity::class.java)
-        intent.putExtra(WebViewActivity.URL, url)
-        intent.putExtra(WebViewActivity.TITLE, title)
+    private fun startRead(it: News) {
+        val intent = Intent(activity, ReadNewsActivity::class.java)
+        intent.putExtra(ReadNewsActivity.DATA, it)
         startActivity(intent)
     }
 

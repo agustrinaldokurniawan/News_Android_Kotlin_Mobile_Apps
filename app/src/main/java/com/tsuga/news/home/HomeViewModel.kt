@@ -1,8 +1,9 @@
 package com.tsuga.news.home
 
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
-import com.tsuga.news.core.data.NewsRepository
+import com.tsuga.news.core.domain.usecase.NewsUseCase
 
-class HomeViewModel(newsRepository: NewsRepository) : ViewModel() {
-    val news = newsRepository.getAllNews()
+class HomeViewModel(newsUseCase: NewsUseCase) : ViewModel() {
+    val news = LiveDataReactiveStreams.fromPublisher(newsUseCase.getAllNews())
 }

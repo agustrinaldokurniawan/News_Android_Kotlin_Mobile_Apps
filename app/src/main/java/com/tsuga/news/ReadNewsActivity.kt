@@ -1,9 +1,9 @@
 package com.tsuga.news
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
-import com.tsuga.news.core.data.source.local.entity.NewsEntity
+import androidx.appcompat.app.AppCompatActivity
+import com.tsuga.news.core.domain.model.News
 import com.tsuga.news.databinding.ActivityReadNewsBinding
 import com.tsuga.news.readnews.ReadNews
 
@@ -27,7 +27,7 @@ class ReadNewsActivity : AppCompatActivity() {
         )
 
 
-        val data = intent.getParcelableExtra<NewsEntity>("data")
+        val data = intent.getParcelableExtra<News>("data")
         val bundle = Bundle()
         bundle.putParcelable("data", data)
         val fragment = ReadNews()

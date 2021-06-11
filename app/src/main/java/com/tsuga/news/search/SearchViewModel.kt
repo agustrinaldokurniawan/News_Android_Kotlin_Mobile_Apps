@@ -1,15 +1,13 @@
 package com.tsuga.news.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
-import com.tsuga.news.core.data.NewsRepository
-import com.tsuga.news.core.data.Resource
-import com.tsuga.news.core.data.source.local.entity.NewsEntity
+import com.tsuga.news.core.domain.model.News
+import com.tsuga.news.core.domain.usecase.NewsUseCase
 
-class SearchViewModel(private val newsRepository: NewsRepository) : ViewModel() {
-    fun searchNews(keyword: String): LiveData<List<NewsEntity>>{
-        return newsRepository.getNewsByKeyword(keyword)
+class SearchViewModel(private val newsUseCase: NewsUseCase) : ViewModel() {
+    fun searchNews(keyword: String): LiveData<List<News>>{
+        return LiveDataReactiveStreams.fromPublisher(newsUseCase.getNewsByKeyword(keyword))
     }
 }

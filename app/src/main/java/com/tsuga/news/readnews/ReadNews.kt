@@ -2,12 +2,11 @@ package com.tsuga.news.readnews
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
@@ -15,16 +14,16 @@ import com.bumptech.glide.request.RequestOptions
 import com.tsuga.news.R
 import com.tsuga.news.ReadNewsActivity
 import com.tsuga.news.WebViewActivity
-import com.tsuga.news.core.data.Resource
-import com.tsuga.news.core.data.source.local.entity.NewsEntity
+import com.tsuga.news.core.domain.model.News
 import com.tsuga.news.core.ui.NewsAdapter
-import com.tsuga.news.core.ui.ViewModelFactory
 import com.tsuga.news.databinding.ReadNewsFragmentBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
+import java.util.*
 
 class ReadNews : Fragment() {
     private lateinit var binding: ReadNewsFragmentBinding
-    private lateinit var viewModel: ReadNewsViewModel
+    private val viewModel: ReadNewsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,14 +49,14 @@ class ReadNews : Fragment() {
             startActivity(intent)
         }
 
-        val factory = ViewModelFactory.getInstance(requireActivity())
-        viewModel = ViewModelProvider(this, factory)[ReadNewsViewModel::class.java]
-
-        val data = arguments?.getParcelable<NewsEntity>("data")
+        val data = arguments?.getParcelable<News>("data")
+        if (data != null) {
+            setBookmark(data.isBookmark)
+        }
 
         binding.apply {
             Glide.with(view)
-                .load(data?.urlToImage)
+                .load(data?.urlToImage.orEmpty().ifEmpty { R.drawable.empty_news })
                 .apply(
                     RequestOptions().transform(
                         CenterCrop(),
@@ -88,30 +87,14 @@ class ReadNews : Fragment() {
         viewModel.news.observe(viewLifecycleOwner, {
             if (it != null) {
                 when (it) {
-                    is Resource.Loading -> {
+                    is com.tsuga.news.core.data.Resource.Loading -> {
                     }
-                    is Resource.Success -> {
+                    is com.tsuga.news.core.data.Resource.Success -> {
                         newsAdapter.setData(it.data)
                     }
-                    is Resource.Error -> {
+                    is com.tsuga.news.core.data.Resource.Error -> {
                     }
                 }
-            }
-
-            if (data?.isBookmark == true) {
-                binding.btnBookmark.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_baseline_bookmark_24_white
-                    )
-                )
-            } else {
-                binding.btnBookmark.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_baseline_bookmark_border_24
-                    )
-                )
             }
         })
         with(binding.rvNews) {

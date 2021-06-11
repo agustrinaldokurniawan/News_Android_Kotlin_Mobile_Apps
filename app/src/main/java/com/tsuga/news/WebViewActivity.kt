@@ -1,12 +1,9 @@
 package com.tsuga.news
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
-import com.tsuga.news.core.data.source.local.entity.NewsEntity
+import androidx.appcompat.app.AppCompatActivity
 import com.tsuga.news.databinding.ActivityWebViewBinding
-import com.tsuga.news.readnews.ReadNews
 import com.tsuga.news.readnews.WebView
 
 class WebViewActivity : AppCompatActivity() {
