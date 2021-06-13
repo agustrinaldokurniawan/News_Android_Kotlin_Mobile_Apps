@@ -68,10 +68,10 @@ class ReadNews : Fragment() {
             tvSource.text = data?.source
             tvContent.text = data?.content
 
-            val formatter1 = SimpleDateFormat("yyyy-MM-dd")
-            val formatter2 = SimpleDateFormat("dd MMMM yyyy")
-            val date1 = formatter1.parse(data?.publishedAt)
-            val date = formatter2.format(date1)
+            val formatter1 = SimpleDateFormat("yyyy-MM-dd", Locale("id", "ID"))
+            val formatter2 = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+            val date1 = data?.let { formatter1.parse(it.publishedAt) }
+            val date = date1?.let { formatter2.format(date1) }
 
             tvDate.text = date.toString()
             btnBookmark.setOnClickListener {

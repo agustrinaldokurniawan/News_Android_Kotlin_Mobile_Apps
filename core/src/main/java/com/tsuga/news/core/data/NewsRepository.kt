@@ -1,5 +1,7 @@
 package com.tsuga.news.core.data
 
+import com.tsuga.news.core.data.source.local.LocalDataSource
+import com.tsuga.news.core.data.source.remote.RemoteDataSource
 import com.tsuga.news.core.data.source.remote.network.ApiResponse
 import com.tsuga.news.core.data.source.remote.response.NewsResponse
 import com.tsuga.news.core.domain.model.News
@@ -11,31 +13,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class NewsRepository(
-    private val remoteDataSource: com.tsuga.news.core.data.source.remote.RemoteDataSource,
-    private val localDataSource: com.tsuga.news.core.data.source.local.LocalDataSource,
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
     private val executors: AppExecutors
 ) : INewsRepository {
-    companion object {
-        @Volatile
-        private var instance: NewsRepository? = null
-
-        fun getInstance(
-            remoteDataSource: com.tsuga.news.core.data.source.remote.RemoteDataSource,
-            localDataSource: com.tsuga.news.core.data.source.local.LocalDataSource,
-            appExecutors: AppExecutors
-        ): NewsRepository =
-            instance ?: synchronized(this) {
-                instance
-                    ?: NewsRepository(
-                        remoteDataSource,
-                        localDataSource,
-                        appExecutors
-                    )
-            }
-    }
-
-    override fun getAllNews(): Flowable<com.tsuga.news.core.data.Resource<List<News>>> =
-        object : com.tsuga.news.core.data.NetworkBoundResource<List<News>, List<NewsResponse>>(executors) {
+    override fun getAllNews(): Flowable<Resource<List<News>>> =
+        object : NetworkBoundResource<List<News>, List<NewsResponse>>(executors) {
             override fun shouldFetch(data: List<News>?): Boolean {
                 return data == null || data.isEmpty()
             }

@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tsuga.news.ReadNewsActivity
+import com.tsuga.news.core.domain.model.News
 import com.tsuga.news.core.ui.NewsAdapter
 import com.tsuga.news.databinding.SearchFragmentBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
     private var _binding: SearchFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     private val viewModel: SearchViewModel by viewModel()
 
@@ -25,7 +26,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = SearchFragmentBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,10 +43,11 @@ class SearchFragment : Fragment() {
             viewModel.searchNews("").observe(viewLifecycleOwner, {
                 if (it != null) {
                     newsAdapter.setData(it)
+                    setEmptyView(it)
                 }
             })
 
-            binding.etNews.addTextChangedListener(object : TextWatcher {
+            binding?.etNews?.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -60,9 +62,10 @@ class SearchFragment : Fragment() {
                     before: Int,
                     count: Int
                 ) {
-                    viewModel.searchNews(s.toString()).observe(viewLifecycleOwner, { query_data->
-                        query_data.let{
+                    viewModel.searchNews(s.toString()).observe(viewLifecycleOwner, { query_data ->
+                        query_data.let {
                             newsAdapter.setData(it)
+                            setEmptyView(it)
                         }
                     })
                 }
@@ -73,12 +76,23 @@ class SearchFragment : Fragment() {
 
             })
 
-            with(binding.rvNews) {
-                layoutManager = LinearLayoutManager(context)
-                adapter = newsAdapter
+
+            binding?.let {
+                with(it.rvNews) {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = newsAdapter
+                }
             }
         }
 
+    }
+
+    private fun setEmptyView(it: List<News>) {
+        if (it.isEmpty()) {
+            binding?.emptySearch?.visibility = View.VISIBLE
+        } else {
+            binding?.emptySearch?.visibility = View.GONE
+        }
     }
 
     override fun onDestroy() {

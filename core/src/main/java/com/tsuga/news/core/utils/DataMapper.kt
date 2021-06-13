@@ -1,14 +1,15 @@
 package com.tsuga.news.core.utils
 
+import com.tsuga.news.core.data.source.local.entity.NewsEntity
 import com.tsuga.news.core.data.source.remote.response.NewsResponse
 import com.tsuga.news.core.domain.model.News
 
 object DataMapper {
-    fun mapResponsesToEntities(input: List<NewsResponse>): List<com.tsuga.news.core.data.source.local.entity.NewsEntity> {
-        val newsList = ArrayList<com.tsuga.news.core.data.source.local.entity.NewsEntity>()
+    fun mapResponsesToEntities(input: List<NewsResponse>): List<NewsEntity> {
+        val newsList = ArrayList<NewsEntity>()
 
         input.map {
-            val news = com.tsuga.news.core.data.source.local.entity.NewsEntity(
+            val news = NewsEntity(
                 publishedAt = it.publishedAt,
                 author = it.author,
                 urlToImage = it.urlToImage,
@@ -23,7 +24,7 @@ object DataMapper {
         return newsList
     }
 
-    fun mapEntitiesToDomain(input: List<com.tsuga.news.core.data.source.local.entity.NewsEntity>): List<News> {
+    fun mapEntitiesToDomain(input: List<NewsEntity>): List<News> {
         return input.map {
             News(
                 publishedAt = it.publishedAt,
@@ -39,8 +40,8 @@ object DataMapper {
         }
     }
 
-    fun mapDomainToEntity(input: News): com.tsuga.news.core.data.source.local.entity.NewsEntity {
-        return com.tsuga.news.core.data.source.local.entity.NewsEntity(
+    fun mapDomainToEntity(input: News): NewsEntity {
+        return NewsEntity(
             publishedAt = input.publishedAt,
             author = input.author,
             urlToImage = input.urlToImage,

@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     private val homeViewModel: HomeViewModel by viewModel()
 
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,44 +45,48 @@ class HomeFragment : Fragment() {
             homeViewModel.news.observe(viewLifecycleOwner, {
                 if (it != null) {
                     when (it) {
-                        is com.tsuga.news.core.data.Resource.Loading -> binding.pg.visibility =
+                        is com.tsuga.news.core.data.Resource.Loading -> binding?.pg?.visibility =
                             View.VISIBLE
                         is com.tsuga.news.core.data.Resource.Success -> {
-                            binding.pg.visibility = View.GONE
+                            binding?.pg?.visibility = View.GONE
                             newsAdapter.setData(it.data)
                             if (it.data != null) {
 
                                 val randomNumber = (0..(it.data!!.size.minus(1))).random()
-                                Glide.with(view)
-                                    .load(
-                                        it.data!![randomNumber].urlToImage.orEmpty()
-                                            .ifEmpty { R.drawable.empty_news })
-                                    .apply(
-                                        RequestOptions().transform(
-                                            CenterCrop(),
-                                            GranularRoundedCorners(0F, 0F, 50F, 40F)
+                                binding?.let { it1 ->
+                                    Glide.with(view)
+                                        .load(
+                                            it.data!![randomNumber].urlToImage
+                                                .ifEmpty { R.drawable.empty_news })
+                                        .apply(
+                                            RequestOptions().transform(
+                                                CenterCrop(),
+                                                GranularRoundedCorners(0F, 0F, 50F, 40F)
+                                            )
                                         )
-                                    )
-                                    .into(binding.ivImage)
-                                binding.tvTitle.text = it.data!![randomNumber].title
-                                binding.tvSource.text = it.data!![randomNumber].source
+                                        .into(it1.ivImage)
+                                }
+                                binding?.tvTitle?.text = it.data!![randomNumber].title
+                                binding?.tvSource?.text = it.data!![randomNumber].source
 
-                                binding.btnReadMore.setOnClickListener { _ ->
+                                binding?.btnReadMore?.setOnClickListener { _ ->
                                     startRead(it.data!![randomNumber])
                                 }
                             }
                         }
                         is com.tsuga.news.core.data.Resource.Error -> {
-                            binding.pg.visibility = View.GONE
-                            binding.tvError.visibility = View.VISIBLE
+                            binding?.pg?.visibility = View.GONE
+                            binding?.tvError?.visibility = View.VISIBLE
                         }
                     }
                 }
             })
-            with(binding.rvNews) {
-                layoutManager = LinearLayoutManager(context)
-                setHasFixedSize(true)
-                adapter = newsAdapter
+            binding?.let {
+                with(it.rvNews) {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = newsAdapter
+                }
             }
         }
     }

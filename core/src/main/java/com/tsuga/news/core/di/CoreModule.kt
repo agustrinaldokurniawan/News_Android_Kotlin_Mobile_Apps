@@ -1,6 +1,7 @@
 package com.tsuga.news.core.di
 
 import androidx.room.Room
+import com.tsuga.news.core.BuildConfig
 import com.tsuga.news.core.data.source.local.room.NewsDatabase
 import com.tsuga.news.core.data.source.remote.network.NewsApiService
 import com.tsuga.news.core.domain.repository.INewsRepository
@@ -28,12 +29,14 @@ val databaseModule = module {
 }
 
 val networkModule = module {
-    single {
-        OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .build()
+    if (BuildConfig.DEBUG) {
+        single {
+            OkHttpClient.Builder()
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .build()
+        }
     }
 
     single {
@@ -41,6 +44,7 @@ val networkModule = module {
             .baseUrl("https://newsapi.org/v2/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(get())
             .build()
 
         retrofit.create(NewsApiService::class.java)

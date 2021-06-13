@@ -1,7 +1,6 @@
 package com.tsuga.news.readnews
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ class WebView : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = WebviewBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -32,10 +31,9 @@ class WebView : Fragment() {
 
         if (url != null) {
             val webSettings = binding.webview.settings
-            webSettings.javaScriptEnabled = true
             webSettings.domStorageEnabled = true
 
-            binding.webview.setWebViewClient(object : WebViewClient() {
+            binding.webview.webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
                     request: WebResourceRequest?
@@ -47,7 +45,6 @@ class WebView : Fragment() {
                     super.onPageFinished(view, url)
                     if (binding.pg.visibility == View.VISIBLE) {
                         binding.pg.visibility = View.GONE
-                        Log.d("webview", "finish")
                     }
                 }
 
@@ -58,9 +55,8 @@ class WebView : Fragment() {
                 ) {
                     super.onReceivedError(view, request, error)
                     binding.tvError.visibility = View.VISIBLE
-                    Log.d("webview", "error")
                 }
-            })
+            }
             binding.webview.loadUrl(url)
             binding.tvTitle.text = title
             binding.btnClose.setOnClickListener {

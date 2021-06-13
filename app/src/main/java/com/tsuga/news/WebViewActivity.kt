@@ -1,17 +1,21 @@
 package com.tsuga.news
 
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.tsuga.news.databinding.ActivityWebViewBinding
 import com.tsuga.news.readnews.WebView
 
+@Suppress("Deprecation")
 class WebViewActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityWebViewBinding
     companion object{
         const val URL = "url"
         const val TITLE = "title"
     }
+
+
+    private lateinit var binding: ActivityWebViewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,11 +23,11 @@ class WebViewActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        @Suppress("Deprecation")
         window.setFlags(
             WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
             WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
         )
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
 
         val url = intent.getStringExtra("url")

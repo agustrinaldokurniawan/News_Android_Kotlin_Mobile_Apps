@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tsuga.news.ReadNewsActivity
+import com.tsuga.news.core.domain.model.News
 import com.tsuga.news.core.ui.NewsAdapter
 import com.tsuga.news.favorite.databinding.BookmarkFragmentBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookmarkFragment : Fragment() {
     private var _binding: BookmarkFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     private val viewModel: BookmarkViewModel by viewModel()
 
@@ -25,7 +26,7 @@ class BookmarkFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = BookmarkFragmentBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,9 +44,10 @@ class BookmarkFragment : Fragment() {
 
             viewModel.news.observe(viewLifecycleOwner, {
                 newsAdapter.setData(it)
+                setEmptyView(it)
             })
 
-            binding.etNews.addTextChangedListener(object : TextWatcher {
+            binding?.etNews?.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -64,6 +66,7 @@ class BookmarkFragment : Fragment() {
                         .observe(viewLifecycleOwner, { query_data ->
                             query_data.let {
                                 newsAdapter.setData(it)
+                                setEmptyView(it)
                             }
                         })
                 }
@@ -74,11 +77,21 @@ class BookmarkFragment : Fragment() {
 
             })
 
-            with(binding.rvNews) {
-                layoutManager = LinearLayoutManager(context)
-                setHasFixedSize(true)
-                adapter = newsAdapter
+            binding?.let {
+                with(it.rvNews) {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = newsAdapter
+                }
             }
+        }
+    }
+
+    private fun setEmptyView(it: List<News>) {
+        if (it.isEmpty()) {
+            binding?.emptySearch?.visibility = View.VISIBLE
+        } else {
+            binding?.emptySearch?.visibility = View.GONE
         }
     }
 

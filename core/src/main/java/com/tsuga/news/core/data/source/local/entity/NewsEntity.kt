@@ -1,13 +1,10 @@
 package com.tsuga.news.core.data.source.local.entity
 
-import android.os.Parcelable
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 @Entity(tableName = "news")
 data class NewsEntity(
     @PrimaryKey
@@ -38,4 +35,4 @@ data class NewsEntity(
 
     @ColumnInfo(name = "isBookmark")
     var isBookmark : Boolean = false
-) : Parcelable
+)

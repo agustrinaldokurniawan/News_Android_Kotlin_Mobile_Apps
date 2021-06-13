@@ -1,11 +1,12 @@
 package com.tsuga.news.core.domain.usecase
 
+import com.tsuga.news.core.data.Resource
 import com.tsuga.news.core.domain.model.News
 import com.tsuga.news.core.domain.repository.INewsRepository
 import io.reactivex.Flowable
 
 class NewsInteractor(private val newsRepository: INewsRepository) : NewsUseCase {
-    override fun getAllNews(): Flowable<com.tsuga.news.core.data.Resource<List<News>>> {
+    override fun getAllNews(): Flowable<Resource<List<News>>> {
         return newsRepository.getAllNews()
     }
 
