@@ -22,15 +22,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ReadNews : Fragment() {
-    private lateinit var binding: ReadNewsFragmentBinding
+    private var _binding: ReadNewsFragmentBinding? = null
+    private val binding get() = _binding
     private val viewModel: ReadNewsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = ReadNewsFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        _binding = ReadNewsFragmentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,7 +55,7 @@ class ReadNews : Fragment() {
             setBookmark(data.isBookmark)
         }
 
-        binding.apply {
+        binding?.apply {
             Glide.with(view)
                 .load(data?.urlToImage.orEmpty().ifEmpty { R.drawable.empty_news })
                 .apply(
@@ -97,10 +98,12 @@ class ReadNews : Fragment() {
                 }
             }
         })
-        with(binding.rvNews) {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = newsAdapter
+        binding?.let {
+            with(it.rvNews) {
+                layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+                setHasFixedSize(true)
+                adapter = newsAdapter
+            }
         }
     }
 
@@ -114,14 +117,14 @@ class ReadNews : Fragment() {
 
     private fun setBookmark(statusBookmark: Boolean) {
         if (statusBookmark) {
-            binding.btnBookmark.setImageDrawable(
+            binding?.btnBookmark?.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
                     R.drawable.ic_baseline_bookmark_24_white
                 )
             )
         } else {
-            binding.btnBookmark.setImageDrawable(
+            binding?.btnBookmark?.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
                     R.drawable.ic_baseline_bookmark_border_24
@@ -129,5 +132,11 @@ class ReadNews : Fragment() {
             )
         }
 
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

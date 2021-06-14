@@ -13,14 +13,16 @@ import androidx.fragment.app.Fragment
 import com.tsuga.news.databinding.WebviewBinding
 
 class WebView : Fragment() {
-    private lateinit var binding: WebviewBinding
+    private var _binding: WebviewBinding? = null
+    private val binding get() = _binding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = WebviewBinding.inflate(layoutInflater, container, false)
-        return binding.root
+    ): View? {
+        _binding = WebviewBinding.inflate(layoutInflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,10 +32,10 @@ class WebView : Fragment() {
         val title = arguments?.getString("title")
 
         if (url != null) {
-            val webSettings = binding.webview.settings
-            webSettings.domStorageEnabled = true
+            val webSettings = binding?.webview?.settings
+            webSettings?.domStorageEnabled = true
 
-            binding.webview.webViewClient = object : WebViewClient() {
+            binding?.webview?.webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
                     request: WebResourceRequest?
@@ -43,8 +45,8 @@ class WebView : Fragment() {
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-                    if (binding.pg.visibility == View.VISIBLE) {
-                        binding.pg.visibility = View.GONE
+                    if (binding?.pg?.visibility == View.VISIBLE) {
+                        binding?.pg?.visibility = View.GONE
                     }
                 }
 
@@ -54,12 +56,12 @@ class WebView : Fragment() {
                     error: WebResourceError?
                 ) {
                     super.onReceivedError(view, request, error)
-                    binding.tvError.visibility = View.VISIBLE
+                    binding?.tvError?.visibility = View.VISIBLE
                 }
             }
-            binding.webview.loadUrl(url)
-            binding.tvTitle.text = title
-            binding.btnClose.setOnClickListener {
+            binding?.webview?.loadUrl(url)
+            binding?.tvTitle?.text = title
+            binding?.btnClose?.setOnClickListener {
                 detachFragment()
             }
         } else {
@@ -69,5 +71,10 @@ class WebView : Fragment() {
 
     private fun detachFragment() {
         activity?.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

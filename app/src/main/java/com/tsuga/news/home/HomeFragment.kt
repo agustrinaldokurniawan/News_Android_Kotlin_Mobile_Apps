@@ -101,5 +101,4 @@ class HomeFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 }
