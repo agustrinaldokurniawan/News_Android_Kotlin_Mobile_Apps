@@ -6,6 +6,7 @@ import com.tsuga.news.core.data.source.local.room.NewsDatabase
 import com.tsuga.news.core.data.source.remote.network.NewsApiService
 import com.tsuga.news.core.domain.repository.INewsRepository
 import com.tsuga.news.core.utils.AppExecutors
+import net.sqlcipher.database.SupportFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -18,12 +19,15 @@ import java.util.concurrent.TimeUnit
 val databaseModule = module {
     factory { get<NewsDatabase>().newsDao() }
     single {
+        val phrase : ByteArray = net.sqlcipher.database.SQLiteDatabase.getBytes("news".toCharArray())
+        val factory = SupportFactory(phrase)
         Room.databaseBuilder(
             androidContext(),
             NewsDatabase::class.java,
             "News.db"
         )
             .fallbackToDestructiveMigration()
+            .openHelperFactory(factory)
             .build()
     }
 }
