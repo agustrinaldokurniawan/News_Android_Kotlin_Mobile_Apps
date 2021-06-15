@@ -1,5 +1,6 @@
 package com.tsuga.news.core.data.source.remote
 
+import android.annotation.SuppressLint
 import com.tsuga.news.core.data.source.remote.network.ApiResponse
 import com.tsuga.news.core.data.source.remote.network.NewsApiService
 import com.tsuga.news.core.data.source.remote.response.NewsResponse
@@ -10,6 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
 class RemoteDataSource(private val newsApiService: NewsApiService) {
+    @SuppressLint("CheckResult")
     fun getAllNews(): Flowable<ApiResponse<List<NewsResponse>>> {
         val resultData = PublishSubject.create<ApiResponse<List<NewsResponse>>>()
 

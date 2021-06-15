@@ -10,11 +10,11 @@
     tools:ignore="Overdraw">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/empty_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="20dp"
         android:visibility="gone"
+        android:id="@+id/empty_search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
         android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/desc_bookmark"
+        android:text="@string/here_your_bookmarked_new"
         android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,6 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_news"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -81,6 +80,7 @@
         android:background="#f3f3f3"
         android:scrollbars="none"
         android:paddingBottom="75dp"
+        android:id="@+id/rv_news"
         app:layout_constraintTop_toBottomOf="@id/et_news"
         tools:listitem="@layout/news_item" />
 

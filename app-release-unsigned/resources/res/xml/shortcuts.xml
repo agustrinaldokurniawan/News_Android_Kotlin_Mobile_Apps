@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcuts android:icon="@drawable/ic_launcher_foreground" android:enabled="true" android:shortcutId="compose">
+        <intent android:targetPackage="com.tsuga.news" android:action="android.intent.action.VIEW" android:targetClass="com.tsuga.news.MainActivity"/>
+        <categories android:name="android.shortcut.search"/>
+        <capability-binding android:key="action.intent.VIEW"/>
+    </shortcuts>
+</shortcuts>
